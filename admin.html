@@ -1,0 +1,512 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel – MLThub by Albatross</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="dashboard.css"/>
+  <link rel="stylesheet" href="admin.css"/>
+  <script src="admin-db.js"></script>
+  <script>
+    // Security Guard: Immediately check authentication on page load
+    (function enforceAdminGuard() {
+      const session = window.MLTDB.getCurrentSession();
+      if (!session || (session.role !== 'Admin' && session.role !== 'SuperAdmin')) {
+        window.location.href = 'admin-login.html';
+      }
+    })();
+  </script>
+</head>
+<body>
+
+<!-- ====== SIDEBAR ====== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">
+      <div class="logo-icon" style="background: linear-gradient(135deg, #ef4444, #7c3aed);"><i class="fa-solid fa-user-shield"></i></div>
+      <div class="brand-text">
+        <span class="brand-name">MLThub</span>
+        <span class="brand-sub">Admin Panel</span>
+      </div>
+    </div>
+    <button class="sidebar-toggle" onclick="toggleSidebar()">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </div>
+
+  <div class="sidebar-user">
+    <div class="user-avatar" style="background: linear-gradient(135deg, #ef4444, #7c3aed);">
+      <i class="fa-solid fa-shield-halved"></i>
+    </div>
+    <div class="user-info">
+      <div class="user-name" id="adminUserName">Admin</div>
+      <div class="user-role" id="adminUserRole">SuperAdmin</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-group">
+      <div class="nav-group-label">Management</div>
+      <a href="#" class="nav-item active" onclick="showAdminSection('overview', this)">
+        <i class="fa-solid fa-chart-line"></i><span>Dashboard</span>
+      </a>
+      <a href="#" class="nav-item" onclick="showAdminSection('subjects', this)">
+        <i class="fa-solid fa-book-medical"></i><span>Manage Subjects</span>
+        <span class="nav-badge" id="subjCountBadge">17</span>
+      </a>
+      <a href="#" class="nav-item" onclick="showAdminSection('users', this)">
+        <i class="fa-solid fa-users-gear"></i><span>Users & Admins</span>
+        <span class="nav-badge" id="userCountBadge">0</span>
+      </a>
+      <a href="#" class="nav-item" onclick="showAdminSection('orders', this)">
+        <i class="fa-solid fa-file-invoice-dollar"></i><span>Orders & Sales</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">System</div>
+      <a href="#" class="nav-item" onclick="showAdminSection('settings', this)">
+        <i class="fa-solid fa-sliders"></i><span>Site Settings</span>
+      </a>
+      <a href="#" class="nav-item" onclick="showAdminSection('logs', this)">
+        <i class="fa-solid fa-list-check"></i><span>Security Logs</span>
+      </a>
+    </div>
+
+    <div class="nav-group">
+      <a href="index.html" class="nav-item" target="_blank">
+        <i class="fa-solid fa-external-link"></i><span>View Main Site</span>
+      </a>
+      <a href="#" class="nav-item nav-item-danger" onclick="handleAdminLogout()">
+        <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+      </a>
+    </div>
+  </nav>
+</aside>
+
+<!-- ====== MAIN CONTENT ====== -->
+<div class="main-content">
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <button class="topbar-toggle" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+      <div class="topbar-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Search subjects, users, orders…" id="adminGlobalSearch" oninput="handleAdminGlobalSearch()"/>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="admin-role-pill" id="rolePill">SUPER ADMIN</div>
+      <div class="topbar-user">
+        <div class="topbar-avatar" style="background: linear-gradient(135deg, #ef4444, #7c3aed);"><i class="fa-solid fa-shield"></i></div>
+        <div class="topbar-user-info">
+          <div class="topbar-name" id="topbarAdminName">Admin</div>
+          <div class="topbar-plan" style="color:#ef4444;">Administrator</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ====== SECTION: OVERVIEW ====== -->
+  <section class="dash-section active" id="admin-section-overview">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Admin Command Center</h1>
+        <p class="page-subtitle">Real-time website metrics, content management, and user administration</p>
+      </div>
+      <button class="btn btn-primary" onclick="openAddSubjectModal()"><i class="fa-solid fa-plus"></i> Add New Subject</button>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card stat-blue">
+        <div class="stat-icon"><i class="fa-solid fa-dollar-sign"></i></div>
+        <div class="stat-info">
+          <div class="stat-value" id="statRevenue">$59.88</div>
+          <div class="stat-label">Total Revenue</div>
+          <div class="stat-change up"><i class="fa-solid fa-arrow-up"></i> Live calculated</div>
+        </div>
+      </div>
+
+      <div class="stat-card stat-purple">
+        <div class="stat-icon"><i class="fa-solid fa-book-medical"></i></div>
+        <div class="stat-info">
+          <div class="stat-value" id="statSubjects">17</div>
+          <div class="stat-label">Medical Subjects</div>
+          <div class="stat-change up"><i class="fa-solid fa-check"></i> Active library</div>
+        </div>
+      </div>
+
+      <div class="stat-card stat-green">
+        <div class="stat-icon"><i class="fa-solid fa-users-gear"></i></div>
+        <div class="stat-info">
+          <div class="stat-value" id="statAdmins">1</div>
+          <div class="stat-label">Admin Accounts</div>
+          <div class="stat-change up"><i class="fa-solid fa-shield"></i> Secured with RBAC</div>
+        </div>
+      </div>
+
+      <div class="stat-card stat-orange">
+        <div class="stat-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+        <div class="stat-info">
+          <div class="stat-value" id="statOrders">12</div>
+          <div class="stat-label">Total Purchases</div>
+          <div class="stat-change up"><i class="fa-solid fa-arrow-up"></i> Completed orders</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="overview-grid">
+      <!-- Quick Subject Overview -->
+      <div class="dash-card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fa-solid fa-layer-group"></i> Active Subjects Overview</h3>
+          <button class="card-link" onclick="showAdminSection('subjects', null)">Manage All</button>
+        </div>
+        <div class="admin-subj-list" id="adminRecentSubjList"></div>
+      </div>
+
+      <!-- System Health & Quick Actions -->
+      <div class="dash-card">
+        <div class="card-header">
+          <h3 class="card-title"><i class="fa-solid fa-server"></i> System Security & Status</h3>
+        </div>
+        <div class="sys-status-box">
+          <div class="status-row"><span>RBAC Protection</span><span class="badge-active">ACTIVE</span></div>
+          <div class="status-row"><span>Password Hashing</span><span class="badge-active">SHA-256 SALT</span></div>
+          <div class="status-row"><span>Session Validity</span><span class="badge-active">8 HOURS</span></div>
+          <div class="status-row"><span>Maintenance Mode</span><span class="badge-inactive" id="maintStatusBadge">OFF</span></div>
+        </div>
+        <div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:.6rem;">
+          <button class="btn btn-outline btn-full" onclick="openAddAdminModal()"><i class="fa-solid fa-user-plus"></i> Create New Admin Account</button>
+          <button class="btn btn-outline btn-full" onclick="showAdminSection('logs', null)"><i class="fa-solid fa-shield-halved"></i> View Audit Logs</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SECTION: SUBJECTS ====== -->
+  <section class="dash-section" id="admin-section-subjects">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Manage Medical Subjects</h1>
+        <p class="page-subtitle">Add, edit, or remove subjects and PowerPoint presentation modules</p>
+      </div>
+      <button class="btn btn-primary" onclick="openAddSubjectModal()"><i class="fa-solid fa-plus"></i> Add New Subject</button>
+    </div>
+
+    <div class="dash-card">
+      <div class="table-actions">
+        <input type="text" placeholder="Filter subjects by name or category…" id="subjectFilterInput" oninput="filterSubjectsTable()"/>
+      </div>
+      <div class="orders-table-wrap">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Icon</th>
+              <th>Subject Name</th>
+              <th>Category</th>
+              <th>Badge</th>
+              <th>Topics / PPTs</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminSubjectsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SECTION: USERS & ROLES ====== -->
+  <section class="dash-section" id="admin-section-users">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">User & Role Management</h1>
+        <p class="page-subtitle">Manage administrator accounts, roles, and status</p>
+      </div>
+      <button class="btn btn-primary" onclick="openAddAdminModal()"><i class="fa-solid fa-user-plus"></i> Add Administrator</button>
+    </div>
+
+    <div class="dash-card">
+      <div class="orders-table-wrap">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email Address</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Created Date</th>
+              <th>Last Login</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminUsersTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SECTION: ORDERS ====== -->
+  <section class="dash-section" id="admin-section-orders">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Orders & Sales Management</h1>
+        <p class="page-subtitle">View and update customer purchases and transactions</p>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="orders-table-wrap">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>PPT Title</th>
+              <th>Subject</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Change Status</th>
+            </tr>
+          </thead>
+          <tbody id="adminOrdersTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SECTION: SETTINGS ====== -->
+  <section class="dash-section" id="admin-section-settings">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Site Settings & Configuration</h1>
+        <p class="page-subtitle">Configure global platform options and maintenance controls</p>
+      </div>
+    </div>
+
+    <div class="settings-grid">
+      <div class="dash-card">
+        <div class="card-header"><h3 class="card-title"><i class="fa-solid fa-sliders"></i> General Settings</h3></div>
+        <form class="settings-form" onsubmit="saveSiteSettings(event)">
+          <div class="form-group-db"><label>Platform Name</label><input type="text" id="cfgSiteTitle"/></div>
+          <div class="form-group-db"><label>Brand Tagline</label><input type="text" id="cfgSiteTagline"/></div>
+          <div class="form-group-db"><label>Support Email</label><input type="email" id="cfgSupportEmail"/></div>
+          <div class="form-group-db"><label>Support Phone</label><input type="text" id="cfgSupportPhone"/></div>
+          <div class="form-row">
+            <div class="form-group-db"><label>Currency Symbol</label><input type="text" id="cfgCurrency"/></div>
+            <div class="form-group-db"><label>Default PPT Price ($)</label><input type="text" id="cfgDefaultPrice"/></div>
+          </div>
+          <button type="submit" class="btn btn-primary">Save Settings</button>
+        </form>
+      </div>
+
+      <div class="dash-card">
+        <div class="card-header"><h3 class="card-title"><i class="fa-solid fa-toggle-on"></i> Security & Maintenance</h3></div>
+        <div class="toggle-list">
+          <div class="toggle-item">
+            <div>
+              <div class="toggle-label">Maintenance Mode</div>
+              <div class="toggle-desc">Show maintenance message to visitors</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="cfgMaintenance" onchange="toggleMaintenanceMode(this.checked)"/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-item" style="margin-top:1rem;">
+            <div>
+              <div class="toggle-label">Allow New User Registrations</div>
+              <div class="toggle-desc">Enable public user signup</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="cfgRegistrations" checked/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Gateways Configuration -->
+      <div class="dash-card" style="grid-column: 1 / -1;">
+        <div class="card-header"><h3 class="card-title"><i class="fa-solid fa-credit-card"></i> Payment Methods & Gateway Settings</h3></div>
+        <form class="settings-form" onsubmit="savePaymentGatewaySettings(event)">
+          <div class="form-row">
+            <div class="form-group-db">
+              <label><i class="fa-solid fa-wallet" style="color:#10b981;"></i> EasyPaisa Account Number</label>
+              <input type="text" id="cfgEpNumber" placeholder="03017654321"/>
+            </div>
+            <div class="form-group-db">
+              <label><i class="fa-solid fa-money-bill-wave" style="color:#ef4444;"></i> JazzCash Account Number</label>
+              <input type="text" id="cfgJcNumber" placeholder="03009876543"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group-db">
+              <label><i class="fa-brands fa-paypal" style="color:#0079c1;"></i> PayPal Business Email</label>
+              <input type="email" id="cfgPaypalEmail" placeholder="payments@albatross.com"/>
+            </div>
+            <div class="form-group-db">
+              <label><i class="fa-solid fa-building-columns" style="color:#8b5cf6;"></i> Bank Name</label>
+              <input type="text" id="cfgBankName" placeholder="Meezan Bank Ltd."/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group-db">
+              <label>Bank Account Title</label>
+              <input type="text" id="cfgBankTitle" placeholder="MLThub by Albatross"/>
+            </div>
+            <div class="form-group-db">
+              <label>IBAN Number</label>
+              <input type="text" id="cfgBankIban" placeholder="PK64MEZN0001234567890101"/>
+            </div>
+            <div class="form-group-db">
+              <label>Raast ID</label>
+              <input type="text" id="cfgBankRaast" placeholder="03001234567"/>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Payment Gateway Settings</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SECTION: SECURITY LOGS ====== -->
+  <section class="dash-section" id="admin-section-logs">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Security & Audit Logs</h1>
+        <p class="page-subtitle">Historical record of administrator actions and security events</p>
+      </div>
+    </div>
+
+    <div class="dash-card">
+      <div class="orders-table-wrap">
+        <table class="orders-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Administrator</th>
+              <th>Action</th>
+              <th>Event Details</th>
+            </tr>
+          </thead>
+          <tbody id="adminLogsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ====== ADD/EDIT SUBJECT MODAL ====== -->
+<div class="db-modal-overlay" id="subjectModalAdmin" onclick="if(event.target===this)closeSubjectModalAdmin()">
+  <div class="db-modal-box" style="max-width:560px;">
+    <button class="db-modal-close" onclick="closeSubjectModalAdmin()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="db-ppt-header">
+      <h3 id="modalSubjectHeading">Add New Medical Subject</h3>
+      <p>Configure subject presentation details and icon styling</p>
+    </div>
+    <form style="padding:1.5rem;" onsubmit="handleSubjectSubmit(event)">
+      <input type="hidden" id="subjEditId"/>
+      <div class="form-group-db" style="margin-bottom:1rem;">
+        <label>Subject Name</label>
+        <input type="text" id="subjName" placeholder="e.g. Pathology" required/>
+      </div>
+
+      <div class="form-row" style="margin-bottom:1rem;">
+        <div class="form-group-db">
+          <label>FontAwesome Icon Class</label>
+          <input type="text" id="subjIcon" placeholder="fa-solid fa-microscope" required/>
+        </div>
+        <div class="form-group-db">
+          <label>Category</label>
+          <select id="subjCategory">
+            <option value="basic">Basic Sciences</option>
+            <option value="clinical">Clinical</option>
+            <option value="para">Para-Clinical</option>
+            <option value="surgery">Surgery</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row" style="margin-bottom:1rem;">
+        <div class="form-group-db">
+          <label>Accent Color Code</label>
+          <input type="color" id="subjColor" value="#2563eb"/>
+        </div>
+        <div class="form-group-db">
+          <label>Badge Tag</label>
+          <select id="subjBadge">
+            <option value="">None</option>
+            <option value="hot">HOT</option>
+            <option value="new">NEW</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group-db" style="margin-bottom:1.25rem;">
+        <label>Description</label>
+        <textarea id="subjDesc" rows="3" placeholder="Brief summary of subject content..." style="padding:.65rem;border:1.5px solid var(--db-border);border-radius:var(--db-radius);"></textarea>
+      </div>
+
+      <div style="display:flex;gap:.75rem;justify-content:flex-end;">
+        <button type="button" class="btn btn-outline" onclick="closeSubjectModalAdmin()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Subject</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ====== ADD ADMIN MODAL ====== -->
+<div class="db-modal-overlay" id="addAdminModal" onclick="if(event.target===this)closeAddAdminModal()">
+  <div class="db-modal-box" style="max-width:480px;">
+    <button class="db-modal-close" onclick="closeAddAdminModal()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="db-ppt-header">
+      <h3>Create Administrator Account</h3>
+      <p>Add a new authorized admin with role-based access</p>
+    </div>
+    <form style="padding:1.5rem;" onsubmit="handleCreateAdminSubmit(event)">
+      <div class="form-group-db" style="margin-bottom:1rem;">
+        <label>Full Name</label>
+        <input type="text" id="newAdminName" placeholder="Dr. Jane Doe" required/>
+      </div>
+
+      <div class="form-group-db" style="margin-bottom:1rem;">
+        <label>Email Address</label>
+        <input type="email" id="newAdminEmail" placeholder="jane@mlthub.com" required/>
+      </div>
+
+      <div class="form-group-db" style="margin-bottom:1rem;">
+        <label>Password (min 6 chars)</label>
+        <input type="password" id="newAdminPass" placeholder="Enter password" required minlength="6"/>
+      </div>
+
+      <div class="form-group-db" style="margin-bottom:1.25rem;">
+        <label>Admin Role</label>
+        <select id="newAdminRole">
+          <option value="Admin">Admin (Standard Administrator)</option>
+          <option value="SuperAdmin">SuperAdmin (Full Control)</option>
+        </select>
+      </div>
+
+      <div style="display:flex;gap:.75rem;justify-content:flex-end;">
+        <button type="button" class="btn btn-outline" onclick="closeAddAdminModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create Admin</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="db-toast" id="adminToast"></div>
+
+<script src="admin.js"></script>
+</body>
+</html>

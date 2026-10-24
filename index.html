@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MLThub – Medical PPT Library by Albatross</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- ======== HEADER ======== -->
+<header id="header">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <div class="logo-icon"><i class="fa-solid fa-dna"></i></div>
+      <div class="brand-text">
+        <span class="brand-name">MLThub</span>
+        <span class="brand-sub">by Albatross</span>
+      </div>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home" class="nav-link active">Home</a></li>
+      <li><a href="#subjects" class="nav-link">Subjects</a></li>
+      <li><a href="#featured" class="nav-link">Featured</a></li>
+      <li><a href="#faq" class="nav-link">FAQ</a></li>
+      <li><a href="#contact" class="nav-link">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="#" class="btn btn-outline" onclick="showLoginModal(); return false;"><i class="fa-solid fa-right-to-bracket"></i> Sign In</a>
+      <a href="dashboard.html" class="btn btn-primary"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+      <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<!-- ======== HERO SECTION ======== -->
+<section id="home" class="hero">
+  <div class="hero-bg">
+    <div class="hero-shape shape1"></div>
+    <div class="hero-shape shape2"></div>
+    <div class="hero-shape shape3"></div>
+  </div>
+  <div class="hero-content">
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+      <div class="hero-badge"><i class="fa-solid fa-star"></i> #1 Medical PPT Platform</div>
+      <div class="hero-badge" style="background:rgba(16,185,129,0.15);color:#059669;border-color:rgba(16,185,129,0.3);"><i class="fa-solid fa-earth-americas"></i> Global Student Rate: $1.00 Worldwide</div>
+    </div>
+    <h1 class="hero-title">
+      Premium Medical <span class="highlight">PowerPoint</span><br/>Presentations for Students
+    </h1>
+    <p class="hero-subtitle">
+      Access 1500+ professionally designed PPTs across 17 medical subjects for only <strong style="color:var(--primary);">$1.00</strong> each.<br/>
+      Affordable, accessible, and crafted for medical students worldwide.
+    </p>
+    <div class="search-wrapper">
+      <div class="search-bar">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="searchInput" placeholder="Search subjects, topics, slides…" oninput="handleSearch()"/>
+        <button class="search-btn" onclick="triggerSearch()">Search</button>
+      </div>
+      <div class="search-suggestions" id="searchSuggestions"></div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">1500+</span><span class="stat-label">PPT Slides</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">17+</span><span class="stat-label">Subjects</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">50K+</span><span class="stat-label">Students</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">Rating</span></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-card-stack">
+      <div class="ppt-card card-back2"><i class="fa-solid fa-microscope"></i><span>Pathology</span></div>
+      <div class="ppt-card card-back1"><i class="fa-solid fa-heart-pulse"></i><span>Cardiology</span></div>
+      <div class="ppt-card card-front"><i class="fa-solid fa-brain"></i><span>Neurology</span><div class="card-slides">10 Slides</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== SEARCH RESULTS SECTION ======== -->
+<section id="searchResults" class="search-results-section" style="display:none;">
+  <div class="container">
+    <h2 class="section-title">Search Results</h2>
+    <div class="subjects-grid" id="searchResultsGrid"></div>
+    <button class="btn btn-outline" onclick="closeSearch()" style="margin-top:2rem;">← Back to All Subjects</button>
+  </div>
+</section>
+
+<!-- ======== SUBJECTS SECTION ======== -->
+<section id="subjects" class="subjects-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">Browse Library</div>
+      <h2 class="section-title">Medical Subjects</h2>
+      <p class="section-subtitle">Explore our comprehensive library of professionally curated medical presentations — only $1.00 per topic worldwide</p>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterSubjects('all', this)">All</button>
+      <button class="filter-btn" onclick="filterSubjects('basic', this)">Basic Sciences</button>
+      <button class="filter-btn" onclick="filterSubjects('clinical', this)">Clinical</button>
+      <button class="filter-btn" onclick="filterSubjects('para', this)">Para-Clinical</button>
+      <button class="filter-btn" onclick="filterSubjects('surgery', this)">Surgery</button>
+    </div>
+    <div class="subjects-grid" id="subjectsGrid"></div>
+  </div>
+</section>
+
+<!-- ======== FEATURED SECTION ======== -->
+<section id="featured" class="featured-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">Top Picks</div>
+      <h2 class="section-title">Featured Presentations</h2>
+      <p class="section-subtitle">Most downloaded and highest-rated slides this month</p>
+    </div>
+    <div class="featured-grid" id="featuredGrid"></div>
+  </div>
+</section>
+
+<!-- ======== HOW IT WORKS ======== -->
+<section class="how-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">Simple Process</div>
+      <h2 class="section-title">How It Works</h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">01</div>
+        <div class="step-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <h3>Search & Browse</h3>
+        <p>Find your subject or specific topic using our smart search or browse through categories.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">02</div>
+        <div class="step-icon"><i class="fa-solid fa-eye"></i></div>
+        <h3>Preview Slides</h3>
+        <p>Preview all 10 slides before purchasing. Know exactly what you're getting.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">03</div>
+        <div class="step-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+        <h3>Purchase</h3>
+        <p>Secure checkout with multiple payment options. Instant delivery to your email.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">04</div>
+        <div class="step-icon"><i class="fa-solid fa-download"></i></div>
+        <h3>Download & Learn</h3>
+        <p>Download your PPT files and start learning with expert-designed presentations.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== FAQ SECTION ======== -->
+<section id="faq" class="faq-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">Got Questions?</div>
+      <h2 class="section-title">Frequently Asked Questions</h2>
+      <p class="section-subtitle">Everything you need to know about MLThub</p>
+    </div>
+    <div class="faq-container">
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span>What is MLThub?</span><i class="fa-solid fa-chevron-down faq-icon"></i></button>
+        <div class="faq-answer"><p>MLThub (Medical Learning & Teaching Hub) by Albatross is a premium digital platform offering professionally designed PowerPoint presentations across all major medical subjects. Our slides are created by experienced medical educators and specialists.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span>How many slides are included in each PPT?</span><i class="fa-solid fa-chevron-down faq-icon"></i></button>
+        <div class="faq-answer"><p>Each PPT presentation contains exactly 10 professionally designed slides covering key concepts, including medical illustrations, diagrams, mnemonics, and clinical pearls.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span>Can I preview slides before buying?</span><i class="fa-solid fa-chevron-down faq-icon"></i></button>
+        <div class="faq-answer"><p>Yes! You can preview all 10 slides of any presentation before making a purchase. Click on any subject or PPT card to open the slide viewer and browse through the full content.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span>What formats are the PPT files available in?</span><i class="fa-solid fa-chevron-down faq-icon"></i></button>
+        <div class="faq-answer"><p>All presentations are available in Microsoft PowerPoint format (.pptx) which is fully editable. Compatible with MS PowerPoint 2016+, LibreOffice Impress, and Google Slides.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span>What payment options are available?</span><i class="fa-solid fa-chevron-down faq-icon"></i></button>
+        <div class="faq-answer"><p>We accept all major payment methods including credit/debit cards (Visa, MasterCard), PayPal, UPI, and bank transfers. All transactions are secured with 256-bit SSL encryption.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span>Is there a refund policy?</span><i class="fa-solid fa-chevron-down faq-icon"></i></button>
+        <div class="faq-answer"><p>We offer a 7-day satisfaction guarantee. If you're not happy with the quality of our slides, we'll provide a full refund — no questions asked.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span>Can I share or resell the PPT files?</span><i class="fa-solid fa-chevron-down faq-icon"></i></button>
+        <div class="faq-answer"><p>No. All presentations are licensed for personal educational use only. Reselling or redistributing is strictly prohibited and violates our Terms of Service.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span>Do you offer bundle packages or subscriptions?</span><i class="fa-solid fa-chevron-down faq-icon"></i></button>
+        <div class="faq-answer"><p>Yes! We offer subject bundles and an All-Access subscription with unlimited downloads for a monthly or yearly fee. Check our Pricing page for current offers and student discounts.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span>How quickly will I receive my purchase?</span><i class="fa-solid fa-chevron-down faq-icon"></i></button>
+        <div class="faq-answer"><p>Delivery is instant! As soon as your payment is confirmed, download links are sent to your registered email. You can also access all purchased files from your dashboard anytime.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)"><span>Are the slides updated regularly?</span><i class="fa-solid fa-chevron-down faq-icon"></i></button>
+        <div class="faq-answer"><p>Yes. Our medical team reviews and updates slides annually. Purchased slides receive free updates for 1 year from the purchase date.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======== CONTACT SECTION ======== -->
+<section id="contact" class="contact-section">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-badge">Get In Touch</div>
+      <h2 class="section-title">Contact Us</h2>
+      <p class="section-subtitle">Have questions? Our team is here to help you 24/7</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <div class="contact-card"><div class="contact-icon"><i class="fa-solid fa-envelope"></i></div><h4>Email Us</h4><p>support@mlthub.com</p></div>
+        <div class="contact-card"><div class="contact-icon"><i class="fa-solid fa-phone"></i></div><h4>Call Us</h4><p>+1 (800) MLT-HUBS</p></div>
+        <div class="contact-card"><div class="contact-icon"><i class="fa-brands fa-whatsapp"></i></div><h4>WhatsApp</h4><p>Chat with us instantly</p></div>
+        <div class="contact-card"><div class="contact-icon"><i class="fa-solid fa-clock"></i></div><h4>Working Hours</h4><p>24/7 Online Support</p></div>
+      </div>
+      <form class="contact-form" onsubmit="submitForm(event)">
+        <div class="form-group"><input type="text" placeholder="Your Full Name" required/></div>
+        <div class="form-group"><input type="email" placeholder="Your Email Address" required/></div>
+        <div class="form-group"><select><option value="">Select Topic</option><option>Purchase Issue</option><option>Download Problem</option><option>Content Quality</option><option>Refund Request</option><option>Other</option></select></div>
+        <div class="form-group"><textarea rows="5" placeholder="Your message…" required></textarea></div>
+        <button type="submit" class="btn btn-primary btn-full">Send Message <i class="fa-solid fa-paper-plane"></i></button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ======== FOOTER ======== -->
+<footer class="footer">
+  <div class="footer-top">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <div class="nav-brand" style="margin-bottom:1rem;">
+          <div class="logo-icon"><i class="fa-solid fa-dna"></i></div>
+          <div class="brand-text"><span class="brand-name">MLThub</span><span class="brand-sub">by Albatross</span></div>
+        </div>
+        <p class="footer-desc">Premium medical PowerPoint presentations crafted by specialists. Empowering the next generation of healthcare professionals.</p>
+        <div class="footer-social">
+          <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#"><i class="fa-brands fa-twitter"></i></a>
+          <a href="#"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a href="#"><i class="fa-brands fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="#home">Home</a></li><li><a href="#subjects">All Subjects</a></li><li><a href="#featured">Featured PPTs</a></li><li><a href="#faq">FAQ</a></li><li><a href="#contact">Contact</a></li><li><a href="dashboard.html">Dashboard</a></li></ul></div>
+      <div class="footer-col"><h4>Popular Subjects</h4><ul><li><a href="#">Anatomy</a></li><li><a href="#">Physiology</a></li><li><a href="#">Pathology</a></li><li><a href="#">Pharmacology</a></li><li><a href="#">Cardiology</a></li><li><a href="#">Neurology</a></li></ul></div>
+      <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Terms of Service</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Refund Policy</a></li><li><a href="#">License Agreement</a></li><li><a href="#">Cookie Policy</a></li></ul></div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="container">
+      <p>© 2026 MLThub by Albatross. All rights reserved. | Designed with <i class="fa-solid fa-heart" style="color:#ef4444;"></i> for Medical Students</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ======== SUBJECT MODAL ======== -->
+<div class="modal-overlay" id="subjectModal" onclick="closeSubjectModal(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="modal-header" id="modalHeader"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ======== PPT VIEWER MODAL ======== -->
+<div class="modal-overlay" id="pptModal" onclick="closePptModal(event)">
+  <div class="modal-box modal-wide">
+    <button class="modal-close" onclick="closePpt()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="ppt-viewer-header" id="pptHeader"></div>
+    <div class="ppt-viewer" id="pptViewer"></div>
+    <div class="ppt-controls">
+      <button class="ppt-nav" id="prevBtn" onclick="prevSlide()"><i class="fa-solid fa-chevron-left"></i> Prev</button>
+      <span class="slide-counter" id="slideCounter">1 / 10</span>
+      <button class="ppt-nav" id="nextBtn" onclick="nextSlide()">Next <i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+    <div class="ppt-footer-actions">
+      <button class="btn btn-primary" onclick="addToCart()"><i class="fa-solid fa-cart-shopping"></i> Add to Cart – $1.00</button>
+      <button class="btn btn-outline" onclick="closePpt()">Close Preview</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======== DIRECT PPT EDITOR & UPLOADER MODAL (IN SUBJECT) ======== -->
+<div class="modal-overlay" id="directPptModal" onclick="closeDirectPptModal(event)">
+  <div class="modal-box modal-wide" style="max-width:720px;">
+    <button class="modal-close" onclick="closeDirectPptModal()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="modal-header" style="padding:1.5rem 2rem 1.25rem;">
+      <div style="display:flex;align-items:center;gap:.85rem;">
+        <div style="width:50px;height:50px;border-radius:12px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:white;">
+          <i class="fa-solid fa-file-powerpoint"></i>
+        </div>
+        <div>
+          <h2 style="font-size:1.35rem;font-weight:800;color:white;" id="directModalTitle">Add New PPT Presentation</h2>
+          <p style="opacity:.85;font-size:.825rem;color:white;" id="directModalSub">Upload PPT from your documents and customize</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-body" style="padding:1.5rem 2rem 2rem;">
+      <!-- Document File Upload Dropzone -->
+      <div class="direct-upload-box" onclick="triggerDirectFileUpload()">
+        <div class="direct-upload-icon"><i class="fa-solid fa-plus"></i></div>
+        <div class="direct-upload-meta">
+          <strong>Tap to choose PPT from Phone / Laptop Documents</strong>
+          <span>Pick your original .pptx, .ppt, or .pdf file</span>
+        </div>
+        <span class="direct-upload-pill"><i class="fa-solid fa-paperclip"></i> Browse File</span>
+      </div>
+      <input type="file" id="directPptFileInput" accept=".ppt,.pptx,.pdf,.ppsx" style="display:none;" onchange="handleDirectFilePicked(this.files)"/>
+
+      <!-- File Attached Card -->
+      <div class="direct-file-attached" id="directFileAttachedCard" style="display:none;">
+        <i class="fa-solid fa-file-powerpoint" style="font-size:1.5rem;color:#f59e0b;"></i>
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;font-size:.875rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--dark);" id="directAttachedFileName">Presentation.pptx</div>
+          <div style="font-size:.75rem;color:var(--muted);" id="directAttachedFileMeta">12.5 MB · Attached for downloads</div>
+        </div>
+        <button type="button" class="card-action-btn delete-btn" onclick="removeDirectAttachedFile()" title="Remove file"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Presentation Form Fields -->
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:.85rem;margin-top:1.25rem;">
+        <div>
+          <label style="display:block;font-size:.8rem;font-weight:700;margin-bottom:.35rem;color:var(--dark);">Presentation Title</label>
+          <input type="text" id="directPptTitle" placeholder="e.g. Upper Limb Biomechanics" style="width:100%;padding:.65rem .85rem;border-radius:8px;border:1px solid var(--border);outline:none;font-size:.88rem;box-sizing:border-box;"/>
+        </div>
+        <div>
+          <label style="display:block;font-size:.8rem;font-weight:700;margin-bottom:.35rem;color:var(--dark);">Price ($)</label>
+          <input type="text" id="directPptPrice" value="$1.00" style="width:100%;padding:.65rem .85rem;border-radius:8px;border:1px solid var(--border);outline:none;font-size:.88rem;box-sizing:border-box;"/>
+        </div>
+        <div>
+          <label style="display:block;font-size:.8rem;font-weight:700;margin-bottom:.35rem;color:var(--dark);">Rating (⭐)</label>
+          <input type="text" id="directPptRating" value="4.9" style="width:100%;padding:.65rem .85rem;border-radius:8px;border:1px solid var(--border);outline:none;font-size:.88rem;box-sizing:border-box;"/>
+        </div>
+      </div>
+
+      <!-- Slide Notice -->
+      <div style="margin-top:1rem;padding:.85rem 1rem;background:var(--lighter);border-radius:10px;border:1px solid var(--border);display:flex;align-items:center;gap:.75rem;">
+        <i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary);font-size:1.3rem;"></i>
+        <div style="font-size:.78rem;color:var(--muted);line-height:1.4;">
+          <strong>Automatic 10 Clinical Slides Generated:</strong> A full interactive slide preview for medical students will be created automatically based on your presentation title.
+        </div>
+      </div>
+
+      <!-- Modal Action Buttons -->
+      <div style="display:flex;justify-content:flex-end;gap:.75rem;margin-top:1.5rem;">
+        <button class="btn btn-outline" onclick="closeDirectPptModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveDirectPptForm()"><i class="fa-solid fa-floppy-disk"></i> Save & Add to Subject</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== CHECKOUT & PAYMENT MODAL ======== -->
+<div class="modal-overlay" id="checkoutModal" onclick="closeCheckoutModal(event)">
+  <div class="modal-box modal-md" style="max-width:640px;">
+    <button class="modal-close" onclick="closeCheckoutModal()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="modal-header" style="background:linear-gradient(135deg, #1e293b, #0f172a);padding:1.5rem 2rem 1.25rem;">
+      <div style="display:flex;align-items:center;gap:.85rem;">
+        <div style="width:48px;height:48px;border-radius:12px;background:rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#f59e0b;">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div>
+          <h2 style="font-size:1.25rem;font-weight:800;color:white;" id="checkoutModalTitle">Unlock Instant Download</h2>
+          <p style="opacity:.85;font-size:.8rem;color:#94a3b8;">Universal $1.00 Student Pricing · Instant Worldwide Access</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="checkout-modal-content">
+      <!-- Item Summary -->
+      <div class="checkout-summary-card">
+        <div class="checkout-summary-info">
+          <div class="checkout-ppt-icon"><i class="fa-solid fa-file-powerpoint"></i></div>
+          <div>
+            <div class="checkout-summary-title" id="checkoutItemTitle">Upper Limb Anatomy</div>
+            <div class="checkout-summary-meta" id="checkoutItemMeta">Anatomy · Original PowerPoint Presentation</div>
+          </div>
+        </div>
+        <div class="checkout-price-box">
+          <div class="checkout-price-val" id="checkoutItemPrice">$1.00</div>
+          <div class="checkout-price-old">$4.99</div>
+        </div>
+      </div>
+
+      <!-- Perks -->
+      <div class="checkout-features-list">
+        <span><i class="fa-solid fa-circle-check"></i> Instant Original File Download</span>
+        <span><i class="fa-solid fa-earth-americas"></i> Only $1.00 (Affordable Worldwide)</span>
+        <span><i class="fa-solid fa-circle-check"></i> PowerPoint, Keynote & Google Slides</span>
+        <span><i class="fa-solid fa-circle-check"></i> Saved to Student Dashboard</span>
+      </div>
+
+      <!-- Payment Methods Grid -->
+      <label style="display:block;font-size:.8rem;font-weight:700;margin-bottom:.5rem;color:var(--dark);">Select Payment Method</label>
+      <div class="payment-methods-grid">
+        <button type="button" class="payment-method-tile active" id="tilePayCard" onclick="selectPaymentMethod('card', this)">
+          <i class="fa-solid fa-credit-card" style="color:#2563eb;"></i>
+          <span>Card</span>
+          <small>Visa / Master</small>
+        </button>
+        <button type="button" class="payment-method-tile" id="tilePayEasypaisa" onclick="selectPaymentMethod('easypaisa', this)">
+          <i class="fa-solid fa-wallet" style="color:#10b981;"></i>
+          <span>EasyPaisa</span>
+          <small>Account / OTP</small>
+        </button>
+        <button type="button" class="payment-method-tile" id="tilePayJazzcash" onclick="selectPaymentMethod('jazzcash', this)">
+          <i class="fa-solid fa-money-bill-wave" style="color:#ef4444;"></i>
+          <span>JazzCash</span>
+          <small>Mobile MPIN</small>
+        </button>
+        <button type="button" class="payment-method-tile" id="tilePayPaypal" onclick="selectPaymentMethod('paypal', this)">
+          <i class="fa-brands fa-paypal" style="color:#0079c1;"></i>
+          <span>PayPal</span>
+          <small>Express Pay</small>
+        </button>
+        <button type="button" class="payment-method-tile" id="tilePayBank" onclick="selectPaymentMethod('bank', this)">
+          <i class="fa-solid fa-building-columns" style="color:#8b5cf6;"></i>
+          <span>Bank Transfer</span>
+          <small>Raast / IBAN</small>
+        </button>
+        <button type="button" class="payment-method-tile" id="tilePayWallet" onclick="selectPaymentMethod('wallet', this)">
+          <i class="fa-brands fa-apple" style="color:#0f172a;"></i>
+          <span>Apple / GPay</span>
+          <small>1-Click Device</small>
+        </button>
+      </div>
+
+      <!-- Payment Form -->
+      <form id="checkoutPayForm" onsubmit="handleCheckoutSubmit(event)">
+        <!-- 1. CARD PAYMENT PANEL -->
+        <div class="payment-panel active" id="payPanel-card">
+          <div class="checkout-input-group" style="margin-bottom:.85rem;">
+            <label>Cardholder Name</label>
+            <input type="text" id="payCardName" placeholder="Dr. Ahmed Khan" value="Dr. Ahmed Khan" required/>
+          </div>
+          <div class="checkout-input-group" style="margin-bottom:.85rem;">
+            <label>Card Number</label>
+            <div style="position:relative;">
+              <input type="text" id="payCardNumber" placeholder="4242 •••• •••• 4242" value="4242 8890 1234 4242" maxlength="19" required/>
+              <div style="position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;gap:4px;color:#64748b;font-size:1.2rem;">
+                <i class="fa-brands fa-cc-visa" style="color:#1e40af;"></i>
+                <i class="fa-brands fa-cc-mastercard" style="color:#ea580c;"></i>
+              </div>
+            </div>
+          </div>
+          <div class="checkout-form-grid">
+            <div class="checkout-input-group">
+              <label>Expiry Date</label>
+              <input type="text" id="payCardExpiry" placeholder="12/28" value="12/28" maxlength="5" required/>
+            </div>
+            <div class="checkout-input-group">
+              <label>CVV / CVC</label>
+              <input type="password" id="payCardCvc" placeholder="•••" value="888" maxlength="4" required/>
+            </div>
+          </div>
+          <button type="submit" class="btn-complete-pay" id="btnPaySubmit">
+            <i class="fa-solid fa-lock"></i> Pay $1.00 & Download Instantly
+          </button>
+        </div>
+
+        <!-- 2. EASYPAISA PAYMENT PANEL -->
+        <div class="payment-panel" id="payPanel-easypaisa">
+          <div class="payment-method-banner banner-easypaisa">
+            <div style="display:flex;align-items:center;gap:.65rem;">
+              <i class="fa-solid fa-wallet" style="font-size:1.8rem;color:#10b981;"></i>
+              <div>
+                <strong style="font-size:.9rem;display:block;">EasyPaisa Mobile Account</strong>
+                <span style="font-size:.75rem;">Total Amount: <strong>PKR 280</strong> ($1.00)</span>
+              </div>
+            </div>
+            <span style="background:#10b981;color:white;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:6px;">Instant Approval</span>
+          </div>
+
+          <div class="checkout-input-group" style="margin-bottom:.85rem;">
+            <label>EasyPaisa Account Number (Mobile)</label>
+            <input type="tel" id="payEpNumber" placeholder="03001234567" value="03017654321"/>
+          </div>
+          <div class="checkout-input-group" style="margin-bottom:.85rem;">
+            <label>Account Title / Full Name</label>
+            <input type="text" id="payEpTitle" placeholder="Account Holder Name" value="Dr. Ahmed Khan"/>
+          </div>
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;padding:.65rem .85rem;border-radius:8px;font-size:.76rem;color:#166534;margin-bottom:1rem;line-height:1.4;">
+            <i class="fa-solid fa-circle-info"></i> After tapping below, you will receive an approval prompt on your EasyPaisa app or via USSD (*786#). Enter your 5-digit PIN to authorize download.
+          </div>
+
+          <button type="submit" class="btn-complete-pay" style="background:linear-gradient(135deg, #10b981, #047857);">
+            <i class="fa-solid fa-bolt"></i> Pay with EasyPaisa (PKR 280) & Unlock
+          </button>
+        </div>
+
+        <!-- 3. JAZZCASH PAYMENT PANEL -->
+        <div class="payment-panel" id="payPanel-jazzcash">
+          <div class="payment-method-banner banner-jazzcash">
+            <div style="display:flex;align-items:center;gap:.65rem;">
+              <i class="fa-solid fa-money-bill-wave" style="font-size:1.8rem;color:#ef4444;"></i>
+              <div>
+                <strong style="font-size:.9rem;display:block;">JazzCash Mobile Account</strong>
+                <span style="font-size:.75rem;">Total Amount: <strong>PKR 280</strong> ($1.00)</span>
+              </div>
+            </div>
+            <span style="background:#ef4444;color:white;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:6px;">Fast MPIN</span>
+          </div>
+
+          <div class="checkout-form-grid" style="margin-bottom:.85rem;">
+            <div class="checkout-input-group">
+              <label>JazzCash Mobile Number</label>
+              <input type="tel" id="payJcNumber" placeholder="03001234567" value="03009876543"/>
+            </div>
+            <div class="checkout-input-group">
+              <label>CNIC (Last 6 Digits)</label>
+              <input type="text" id="payJcCnic" placeholder="e.g. 543210" value="543210" maxlength="6"/>
+            </div>
+          </div>
+          <div style="background:#fef2f2;border:1px solid #fecaca;padding:.65rem .85rem;border-radius:8px;font-size:.76rem;color:#991b1b;margin-bottom:1rem;line-height:1.4;">
+            <i class="fa-solid fa-circle-info"></i> An MPIN confirmation request will appear on your Jazz mobile or JazzCash App. Enter your 4-digit MPIN to confirm.
+          </div>
+
+          <button type="submit" class="btn-complete-pay" style="background:linear-gradient(135deg, #ef4444, #b91c1c);">
+            <i class="fa-solid fa-bolt"></i> Pay with JazzCash (PKR 280) & Unlock
+          </button>
+        </div>
+
+        <!-- 4. PAYPAL PAYMENT PANEL -->
+        <div class="payment-panel" id="payPanel-paypal">
+          <div class="payment-method-banner banner-paypal">
+            <div style="display:flex;align-items:center;gap:.65rem;">
+              <i class="fa-brands fa-paypal" style="font-size:2rem;color:#0079c1;"></i>
+              <div>
+                <strong style="font-size:.9rem;display:block;">PayPal Express Checkout</strong>
+                <span style="font-size:.75rem;">Worldwide buyer protection included</span>
+              </div>
+            </div>
+            <span style="background:#0079c1;color:white;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:6px;">Verified Merchant</span>
+          </div>
+
+          <div class="checkout-input-group" style="margin-bottom:1rem;">
+            <label>PayPal Account Email</label>
+            <input type="email" id="payPaypalEmail" placeholder="student@example.com" value="student@albatross.com"/>
+          </div>
+
+          <button type="submit" class="btn-paypal-checkout">
+            <i class="fa-brands fa-paypal"></i> Pay with PayPal ($1.00) & Download
+          </button>
+        </div>
+
+        <!-- 5. BANK TRANSFER / RAAST PANEL -->
+        <div class="payment-panel" id="payPanel-bank">
+          <div class="payment-method-banner banner-bank">
+            <div style="display:flex;align-items:center;gap:.65rem;">
+              <i class="fa-solid fa-building-columns" style="font-size:1.8rem;color:#8b5cf6;"></i>
+              <div>
+                <strong style="font-size:.9rem;display:block;">Direct Bank Transfer / Raast</strong>
+                <span style="font-size:.75rem;">Fee-Free Instant Banking Transfer</span>
+              </div>
+            </div>
+            <span style="background:#8b5cf6;color:white;font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:6px;">0% Fee</span>
+          </div>
+
+          <div class="bank-detail-card">
+            <div class="bank-row">
+              <span style="color:#64748b;">Bank Name:</span>
+              <strong style="color:var(--dark);">Meezan Bank Ltd.</strong>
+            </div>
+            <div class="bank-row">
+              <span style="color:#64748b;">Account Title:</span>
+              <strong style="color:var(--dark);">MLThub by Albatross</strong>
+            </div>
+            <div class="bank-row">
+              <span style="color:#64748b;">IBAN:</span>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="font-family:monospace;font-size:.78rem;" id="ibanText">PK64MEZN0001234567890101</span>
+                <button type="button" class="bank-copy-pill" onclick="copyPaymentText('PK64MEZN0001234567890101', this)"><i class="fa-solid fa-copy"></i> Copy</button>
+              </div>
+            </div>
+            <div class="bank-row">
+              <span style="color:#64748b;">Raast ID:</span>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="font-family:monospace;font-size:.78rem;" id="raastText">03001234567</span>
+                <button type="button" class="bank-copy-pill" onclick="copyPaymentText('03001234567', this)"><i class="fa-solid fa-copy"></i> Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="checkout-form-grid" style="margin-bottom:.85rem;">
+            <div class="checkout-input-group">
+              <label>Your Sender Account / Title</label>
+              <input type="text" id="payBankSender" placeholder="e.g. Ahmed Khan" value="Dr. Ahmed Khan"/>
+            </div>
+            <div class="checkout-input-group">
+              <label>Transaction ID / Reference (TID)</label>
+              <input type="text" id="payBankRef" placeholder="e.g. TRX984729" value="TRX984729"/>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-complete-pay" style="background:linear-gradient(135deg, #8b5cf6, #6d28d9);">
+            <i class="fa-solid fa-circle-check"></i> Submit Transaction & Unlock Download
+          </button>
+        </div>
+
+        <!-- 6. APPLE PAY / GOOGLE PAY PANEL -->
+        <div class="payment-panel" id="payPanel-wallet">
+          <div class="payment-method-banner banner-applepay">
+            <div style="display:flex;align-items:center;gap:.65rem;">
+              <i class="fa-brands fa-apple" style="font-size:2rem;color:#0f172a;"></i>
+              <div>
+                <strong style="font-size:.9rem;display:block;">Digital Wallet Express</strong>
+                <span style="font-size:.75rem;">Fastest checkout using Touch ID, Face ID, or Google Account</span>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn-applepay" onclick="simulateDigitalWalletPay('Apple Pay')">
+            <i class="fa-brands fa-apple" style="font-size:1.3rem;"></i> Pay with Apple Pay ($1.00)
+          </button>
+          <button type="button" class="btn-gpay" onclick="simulateDigitalWalletPay('Google Pay')">
+            <i class="fa-brands fa-google" style="color:#4285f4;font-size:1.1rem;"></i> Pay with Google Pay ($1.00)
+          </button>
+        </div>
+      </form>
+
+      <div class="checkout-security-footer">
+        <span><i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> 256-Bit SSL Encrypted</span>
+        <span><i class="fa-solid fa-bolt" style="color:#f59e0b;"></i> Instant Download Delivery</span>
+        <span><i class="fa-solid fa-rotate-left" style="color:#3b82f6;"></i> Money-back Guarantee</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======== LOGIN MODAL ======== -->
+<div class="modal-overlay" id="loginModal" onclick="closeLoginModal(event)">
+  <div class="modal-box modal-sm">
+    <button class="modal-close" onclick="document.getElementById('loginModal').classList.remove('open'); document.body.style.overflow='';"><i class="fa-solid fa-xmark"></i></button>
+    <div class="login-modal-content">
+      <div class="login-logo"><i class="fa-solid fa-dna"></i></div>
+      <h2>Welcome to MLThub</h2>
+      <p>Sign in to access your presentations & dashboard</p>
+      <form onsubmit="event.preventDefault(); window.location.href='dashboard.html';">
+        <div class="form-group"><input type="email" placeholder="Email Address" required/></div>
+        <div class="form-group"><input type="password" placeholder="Password" required/></div>
+        <button type="submit" class="btn btn-primary btn-full"><i class="fa-solid fa-right-to-bracket"></i> Sign In to Dashboard</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ======== TOAST ======== -->
+<div class="toast" id="toast"></div>
+
+<!-- ======== BACK TO TOP ======== -->
+<button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<script src="file-storage.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

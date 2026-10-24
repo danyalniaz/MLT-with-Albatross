@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Login – MLThub by Albatross</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      color: #f8fafc;
+    }
+    .login-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+    .login-header-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: white;
+      margin: 0 auto 1.25rem;
+      box-shadow: 0 8px 24px rgba(37,99,235,0.4);
+    }
+    .login-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 0.35rem;
+    }
+    .login-subtitle {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.875rem;
+      margin-bottom: 1.75rem;
+    }
+    .form-group-custom {
+      margin-bottom: 1.25rem;
+    }
+    .form-group-custom label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 0.4rem;
+    }
+    .input-wrapper {
+      position: relative;
+    }
+    .input-wrapper i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+    .input-wrapper input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.6rem;
+      border-radius: var(--radius);
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      background: rgba(15, 23, 42, 0.6);
+      color: white;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+    .input-wrapper input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+    }
+    .btn-admin-login {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: var(--transition);
+    }
+    .btn-admin-login:hover {
+      opacity: 0.92;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(37,99,235,0.4);
+    }
+    .alert-box {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      margin-bottom: 1.25rem;
+      display: none;
+    }
+    .setup-banner {
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(37, 99, 235, 0.3);
+      color: #93c5fd;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .setup-banner a {
+      color: white;
+      font-weight: 700;
+      text-decoration: underline;
+    }
+    .back-home {
+      display: block;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      margin-top: 1.5rem;
+      transition: var(--transition);
+    }
+    .back-home:hover {
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-card">
+  <div class="login-header-icon"><i class="fa-solid fa-lock"></i></div>
+  <h1 class="login-title">Admin Portal</h1>
+  <p class="login-subtitle">MLThub by Albatross Control Panel</p>
+
+  <div id="noAdminBanner" class="setup-banner" style="display:none;">
+    <i class="fa-solid fa-circle-info"></i> No Administrator account found.<br/>
+    <a href="admin-setup.html">Click here to create the First Admin Account</a>
+  </div>
+
+  <div class="alert-box" id="errorAlert"></div>
+
+  <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+    <div class="form-group-custom">
+      <label>Admin Email Address</label>
+      <div class="input-wrapper">
+        <i class="fa-solid fa-envelope"></i>
+        <input type="email" id="loginEmail" value="admin@mlthub.com" placeholder="admin@mlthub.com" required/>
+      </div>
+    </div>
+
+    <div class="form-group-custom">
+      <label>Password</label>
+      <div class="input-wrapper">
+        <i class="fa-solid fa-key"></i>
+        <input type="password" id="loginPassword" value="admin123" placeholder="Enter password" required/>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-admin-login" id="loginBtn">
+      <i class="fa-solid fa-right-to-bracket"></i> Sign In to Admin Panel
+    </button>
+  </form>
+
+  <div style="margin-top:1rem;text-align:center;">
+    <button type="button" onclick="quickAdminLogin()" class="btn-admin-login" style="background:linear-gradient(135deg, #10b981, #059669);">
+      <i class="fa-solid fa-bolt"></i> One-Click Admin Sign In
+    </button>
+  </div>
+
+  <a href="index.html" class="back-home">← Back to Main Website</a>
+</div>
+
+<script src="admin-db.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Check if session already valid
+    const session = window.MLTDB.getCurrentSession();
+    if (session && (session.role === 'Admin' || session.role === 'SuperAdmin')) {
+      window.location.href = 'admin.html';
+      return;
+    }
+
+    // Check if any admin account exists
+    if (!window.MLTDB.hasAdminAccounts()) {
+      document.getElementById('noAdminBanner').style.display = 'block';
+    }
+  });
+
+  async function handleAdminLogin(e) {
+    e.preventDefault();
+    const alertBox = document.getElementById('errorAlert');
+    const loginBtn = document.getElementById('loginBtn');
+    alertBox.style.display = 'none';
+
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    try {
+      loginBtn.disabled = true;
+      loginBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating…';
+
+      await window.MLTDB.authenticateAdmin(email, password);
+
+      window.location.href = 'admin.html';
+    } catch (err) {
+      alertBox.textContent = err.message || 'Authentication failed.';
+      alertBox.style.display = 'block';
+      loginBtn.disabled = false;
+      loginBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In to Admin Panel';
+    }
+  }
+
+  async function quickAdminLogin() {
+    document.getElementById('loginEmail').value = 'admin@mlthub.com';
+    document.getElementById('loginPassword').value = 'admin123';
+    const fakeEvent = { preventDefault: () => {} };
+    await handleAdminLogin(fakeEvent);
+  }
+</script>
+</body>
+</html>

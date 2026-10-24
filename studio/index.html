@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MLThub Studio – Elementor-Style Visual Page Builder & Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="editor.css"/>
+  <script src="studio-core.js"></script>
+  <script>
+    // Security Guard: Ensure admin is authenticated
+    (function enforceStudioAuth() {
+      const session = window.MLTStudio.getCurrentSession();
+      if (!session) {
+        window.location.href = 'login.html';
+      }
+    })();
+  </script>
+</head>
+<body>
+
+<!-- ====== TOP CONTROL BAR ====== -->
+<header class="studio-topbar">
+  <div class="topbar-left">
+    <div class="studio-brand">
+      <div class="brand-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+      <div class="brand-info">
+        <span class="brand-title">MLThub Studio</span>
+        <span class="brand-tag">Visual Builder & Admin</span>
+      </div>
+    </div>
+
+    <!-- Mode Tabs -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" onclick="switchMode('builder', this)"><i class="fa-solid fa-pen-ruler"></i> Page Builder</button>
+      <button class="mode-tab" onclick="switchMode('subjects', this)"><i class="fa-solid fa-book-medical"></i> Subjects & PPTs</button>
+      <button class="mode-tab" onclick="switchMode('customSection', this)"><i class="fa-solid fa-square-plus"></i> Add Section</button>
+      <button class="mode-tab" onclick="switchMode('users', this)"><i class="fa-solid fa-users-gear"></i> Admins</button>
+      <button class="mode-tab" onclick="switchMode('settings', this)"><i class="fa-solid fa-sliders"></i> Settings</button>
+    </div>
+  </div>
+
+  <div class="topbar-center">
+    <!-- Responsive Devices Switcher -->
+    <div class="device-switcher">
+      <button class="device-btn active" title="Desktop View" onclick="setDevice('desktop', this)"><i class="fa-solid fa-desktop"></i></button>
+      <button class="device-btn" title="Tablet View" onclick="setDevice('tablet', this)"><i class="fa-solid fa-tablet-screen-button"></i></button>
+      <button class="device-btn" title="Mobile View" onclick="setDevice('mobile', this)"><i class="fa-solid fa-mobile-screen"></i></button>
+    </div>
+  </div>
+
+  <div class="topbar-right">
+    <div class="save-status" id="saveStatus"><i class="fa-solid fa-circle-check"></i> All changes saved</div>
+    <button class="btn btn-discard" onclick="discardChanges()"><i class="fa-solid fa-rotate-left"></i> Discard</button>
+    <button class="btn btn-save" onclick="saveAndPublish()"><i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish</button>
+    <button class="btn btn-logout" onclick="handleStudioLogout()" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+  </div>
+</header>
+
+<!-- ====== STUDIO MAIN WORKSPACE ====== -->
+<div class="studio-workspace">
+
+  <!-- LEFT INSPECTOR PANEL (ELEMENTOR STYLE) -->
+  <aside class="editor-sidebar" id="editorSidebar">
+
+    <!-- MODE 1: VISUAL PAGE BUILDER ACCORDIONS -->
+    <div class="editor-mode-panel active" id="panel-builder">
+
+      <div class="panel-header">
+        <h3><i class="fa-solid fa-sliders"></i> Elementor Visual Inspector</h3>
+        <p>Edit text, titles, colors & sections live on the right preview</p>
+      </div>
+
+      <!-- Accordion 1: Header & Brand -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-dna"></i> Header & Brand Logo</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body">
+          <div class="field-group">
+            <label>Brand Name</label>
+            <input type="text" data-path="header.brandName" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Brand Subtitle</label>
+            <input type="text" data-path="header.brandSub" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Logo Icon (FontAwesome)</label>
+            <input type="text" data-path="header.logoIcon" oninput="handleLiveInput(this)"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion 2: Hero Section -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-star"></i> Hero Section</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body">
+          <div class="field-group">
+            <label>Top Badge Text</label>
+            <input type="text" data-path="hero.badge" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Title Line 1</label>
+            <input type="text" data-path="hero.titleLine1" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Highlighted Word (Gradient)</label>
+            <input type="text" data-path="hero.highlightText" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Title Line 2</label>
+            <input type="text" data-path="hero.titleLine2" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Hero Subtitle</label>
+            <textarea data-path="hero.subtitle" rows="3" oninput="handleLiveInput(this)"></textarea>
+          </div>
+          <div class="field-group">
+            <label>Search Placeholder Text</label>
+            <input type="text" data-path="hero.searchPlaceholder" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-row">
+            <div class="field-group"><label>Stat 1 Number</label><input type="text" data-path="hero.stat1Num" oninput="handleLiveInput(this)"/></div>
+            <div class="field-group"><label>Stat 1 Label</label><input type="text" data-path="hero.stat1Label" oninput="handleLiveInput(this)"/></div>
+          </div>
+          <div class="field-row">
+            <div class="field-group"><label>Stat 2 Number</label><input type="text" data-path="hero.stat2Num" oninput="handleLiveInput(this)"/></div>
+            <div class="field-group"><label>Stat 2 Label</label><input type="text" data-path="hero.stat2Label" oninput="handleLiveInput(this)"/></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion 3: Medical Subjects Header -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-book-medical"></i> Subjects Section Title</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body">
+          <div class="field-group">
+            <label>Section Badge</label>
+            <input type="text" data-path="subjectsSection.badge" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Section Title</label>
+            <input type="text" data-path="subjectsSection.title" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Section Subtitle</label>
+            <textarea data-path="subjectsSection.subtitle" rows="2" oninput="handleLiveInput(this)"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion 4: Featured Presentations Header -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-fire"></i> Featured Section Title</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body">
+          <div class="field-group">
+            <label>Section Badge</label>
+            <input type="text" data-path="featuredSection.badge" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Section Title</label>
+            <input type="text" data-path="featuredSection.title" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Section Subtitle</label>
+            <textarea data-path="featuredSection.subtitle" rows="2" oninput="handleLiveInput(this)"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion 5: How It Works -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-list-check"></i> How It Works Steps</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body" id="accHowItWorks">
+          <!-- Dynamically filled -->
+        </div>
+      </div>
+
+      <!-- Accordion 6: FAQ Accordion Editor -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-circle-question"></i> FAQ Questions & Answers</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body">
+          <div id="faqListEditor"></div>
+          <button class="btn btn-outline btn-full" style="margin-top:.75rem;" onclick="addNewFaqItem()"><i class="fa-solid fa-plus"></i> Add New FAQ Question</button>
+        </div>
+      </div>
+
+      <!-- Accordion 7: Contact Section -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-envelope"></i> Contact Section</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body">
+          <div class="field-group"><label>Section Title</label><input type="text" data-path="contactSection.title" oninput="handleLiveInput(this)"/></div>
+          <div class="field-group"><label>Support Email</label><input type="email" data-path="contactSection.email" oninput="handleLiveInput(this)"/></div>
+          <div class="field-group"><label>Support Phone</label><input type="text" data-path="contactSection.phone" oninput="handleLiveInput(this)"/></div>
+          <div class="field-group"><label>Working Hours</label><input type="text" data-path="contactSection.hours" oninput="handleLiveInput(this)"/></div>
+        </div>
+      </div>
+
+      <!-- Accordion 8: Footer -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-shoe-prints"></i> Footer & Copyright</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body">
+          <div class="field-group"><label>Footer Description</label><textarea data-path="footer.desc" rows="3" oninput="handleLiveInput(this)"></textarea></div>
+          <div class="field-group"><label>Copyright Text</label><input type="text" data-path="footer.copyright" oninput="handleLiveInput(this)"/></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MODE 2: SUBJECTS & PPTS MANAGER -->
+    <div class="editor-mode-panel" id="panel-subjects">
+      <div class="panel-header">
+        <h3><i class="fa-solid fa-book-medical"></i> Manage Subjects & PPTs</h3>
+        <p>Add, edit, change colors or delete medical subjects</p>
+      </div>
+
+      <button class="btn btn-save btn-full" onclick="openStudioAddSubjectModal()" style="margin-bottom:1rem;"><i class="fa-solid fa-plus"></i> Add New Subject</button>
+      <div class="subj-manager-list" id="studioSubjectsList"></div>
+    </div>
+
+    <!-- MODE 3: ADD NEW CUSTOM SECTION -->
+    <div class="editor-mode-panel" id="panel-customSection">
+      <div class="panel-header">
+        <h3><i class="fa-solid fa-square-plus"></i> Add Custom Section</h3>
+        <p>Build custom section components directly onto the page</p>
+      </div>
+
+      <div class="field-group">
+        <label>Section Preset Layout</label>
+        <select id="customSecLayout">
+          <option value="hero">Hero Callout Box</option>
+          <option value="cards">3-Column Card Grid</option>
+          <option value="banner">Full-Width Announcement Banner</option>
+          <option value="features">Feature Checklist Grid</option>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <label>Section Title</label>
+        <input type="text" id="customSecTitle" placeholder="e.g. Student Testimonials"/>
+      </div>
+
+      <div class="field-group">
+        <label>Section Subtitle / Content</label>
+        <textarea id="customSecSubtitle" rows="3" placeholder="Enter description or content text..."></textarea>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label>Background Color</label>
+          <input type="color" id="customSecBg" value="#f8fafc"/>
+        </div>
+        <div class="field-group">
+          <label>Icon Class</label>
+          <input type="text" id="customSecIcon" value="fa-solid fa-star"/>
+        </div>
+      </div>
+
+      <button class="btn btn-save btn-full" onclick="addCustomSection()"><i class="fa-solid fa-plus"></i> Add Section to Page</button>
+      <div id="customSectionsList" style="margin-top:1.5rem;"></div>
+    </div>
+
+    <!-- MODE 4: ADMIN USERS MANAGER -->
+    <div class="editor-mode-panel" id="panel-users">
+      <div class="panel-header">
+        <h3><i class="fa-solid fa-users-gear"></i> Manage Administrators</h3>
+        <p>Create new admin logins or change existing passwords</p>
+      </div>
+
+      <div class="field-group"><label>New Admin Full Name</label><input type="text" id="newAdminName"/></div>
+      <div class="field-group"><label>New Admin Email</label><input type="email" id="newAdminEmail"/></div>
+      <div class="field-group"><label>Password</label><input type="password" id="newAdminPass"/></div>
+      <button class="btn btn-save btn-full" onclick="createNewAdminInStudio()"><i class="fa-solid fa-user-plus"></i> Create Admin Account</button>
+
+      <h4 style="margin:1.5rem 0 .75rem;font-size:.9rem;color:white;">Current Administrators</h4>
+      <div id="studioAdminUsersList"></div>
+    </div>
+
+    <!-- MODE 5: SETTINGS -->
+    <div class="editor-mode-panel" id="panel-settings">
+      <div class="panel-header">
+        <h3><i class="fa-solid fa-sliders"></i> Studio Configuration</h3>
+      </div>
+      <button class="btn btn-discard btn-full" onclick="resetStudioToDefaults()"><i class="fa-solid fa-rotate-left"></i> Reset All Content to Defaults</button>
+    </div>
+
+  </aside>
+
+  <!-- RIGHT LIVE INTERACTIVE PREVIEW CANVAS -->
+  <main class="preview-canvas-wrap">
+    <div class="device-frame" id="deviceFrame">
+      <div class="frame-bar">
+        <div class="frame-dots"><span></span><span></span><span></span></div>
+        <div class="frame-url"><i class="fa-solid fa-lock"></i> https://mlthub.com/live-preview</div>
+        <button class="frame-refresh" onclick="reloadPreviewIframe()"><i class="fa-solid fa-rotate"></i></button>
+      </div>
+      <iframe src="../index.html" id="previewIframe" class="preview-iframe"></iframe>
+    </div>
+  </main>
+
+</div>
+
+<!-- STUDIO TOAST -->
+<div class="studio-toast" id="studioToast"></div>
+
+<script src="editor.js"></script>
+</body>
+</html>

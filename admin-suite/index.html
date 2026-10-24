@@ -1,0 +1,531 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MLThub Admin Suite – Elementor Visual Builder</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="editor.css"/>
+  <script src="studio-core.js"></script>
+  <script>
+    // Security Guard: Check authentication
+    (function enforceSuiteAuth() {
+      const session = window.MLTStudio.getCurrentSession();
+      if (!session) {
+        window.location.href = 'login.html';
+      }
+    })();
+  </script>
+</head>
+<body>
+
+<!-- ====== TOP CONTROL BAR ====== -->
+<header class="studio-topbar">
+  <div class="topbar-left">
+    <div class="studio-brand">
+      <div class="brand-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+      <div class="brand-info">
+        <span class="brand-title">MLThub Suite</span>
+        <span class="brand-tag">Visual Builder & Admin</span>
+      </div>
+    </div>
+
+    <!-- Mode Tabs -->
+    <div class="mode-tabs">
+      <button class="mode-tab active" onclick="switchMode('builder', this)"><i class="fa-solid fa-pen-ruler"></i> Page Builder</button>
+      <button class="mode-tab" onclick="switchMode('pptEditor', this)"><i class="fa-solid fa-file-powerpoint" style="color:#f59e0b;"></i> PPT Editor</button>
+      <button class="mode-tab" onclick="switchMode('subjects', this)"><i class="fa-solid fa-book-medical"></i> Subjects</button>
+      <button class="mode-tab" onclick="switchMode('customSection', this)"><i class="fa-solid fa-square-plus"></i> Add Section</button>
+      <button class="mode-tab" onclick="switchMode('users', this)"><i class="fa-solid fa-users-gear"></i> Admins</button>
+      <button class="mode-tab" onclick="switchMode('settings', this)"><i class="fa-solid fa-sliders"></i> Settings</button>
+    </div>
+  </div>
+
+  <div class="topbar-center">
+    <!-- Responsive Devices Switcher -->
+    <div class="device-switcher">
+      <button class="device-btn active" title="Desktop View" onclick="setDevice('desktop', this)"><i class="fa-solid fa-desktop"></i></button>
+      <button class="device-btn" title="Tablet View" onclick="setDevice('tablet', this)"><i class="fa-solid fa-tablet-screen-button"></i></button>
+      <button class="device-btn" title="Mobile View" onclick="setDevice('mobile', this)"><i class="fa-solid fa-mobile-screen"></i></button>
+    </div>
+  </div>
+
+  <div class="topbar-right">
+    <button class="btn btn-upload-top" onclick="triggerPptUploadFromMedia()" title="Add PPT from Phone or Laptop">
+      <i class="fa-solid fa-circle-plus"></i> + Add PPT from Media
+    </button>
+    <div class="save-status" id="saveStatus"><i class="fa-solid fa-circle-check"></i> All changes saved</div>
+    <button class="btn btn-discard" onclick="discardChanges()"><i class="fa-solid fa-rotate-left"></i> Discard</button>
+    <button class="btn btn-save" onclick="saveAndPublish()"><i class="fa-solid fa-cloud-arrow-up"></i> Save & Publish</button>
+    <button class="btn btn-logout" onclick="handleSuiteLogout()" title="Logout"><i class="fa-solid fa-right-from-bracket"></i></button>
+  </div>
+</header>
+
+<!-- ====== STUDIO MAIN WORKSPACE ====== -->
+<div class="studio-workspace">
+
+  <!-- LEFT INSPECTOR PANEL (ELEMENTOR STYLE) -->
+  <aside class="editor-sidebar" id="editorSidebar">
+
+    <!-- MODE 1: VISUAL PAGE BUILDER ACCORDIONS -->
+    <div class="editor-mode-panel active" id="panel-builder">
+
+      <div class="panel-header">
+        <h3><i class="fa-solid fa-sliders"></i> Elementor Visual Inspector</h3>
+        <p>Edit text, titles, colors & sections live on the right preview</p>
+      </div>
+
+      <!-- Accordion 1: Header & Brand -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-dna"></i> Header & Brand Logo</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body">
+          <div class="field-group">
+            <label>Brand Name</label>
+            <input type="text" data-path="header.brandName" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Brand Subtitle</label>
+            <input type="text" data-path="header.brandSub" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Logo Icon (FontAwesome)</label>
+            <input type="text" data-path="header.logoIcon" oninput="handleLiveInput(this)"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion 2: Hero Section -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-star"></i> Hero Section</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body">
+          <div class="field-group">
+            <label>Top Badge Text</label>
+            <input type="text" data-path="hero.badge" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Title Line 1</label>
+            <input type="text" data-path="hero.titleLine1" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Highlighted Word (Gradient)</label>
+            <input type="text" data-path="hero.highlightText" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Title Line 2</label>
+            <input type="text" data-path="hero.titleLine2" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Hero Subtitle</label>
+            <textarea data-path="hero.subtitle" rows="3" oninput="handleLiveInput(this)"></textarea>
+          </div>
+          <div class="field-group">
+            <label>Search Placeholder Text</label>
+            <input type="text" data-path="hero.searchPlaceholder" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-row">
+            <div class="field-group"><label>Stat 1 Number</label><input type="text" data-path="hero.stat1Num" oninput="handleLiveInput(this)"/></div>
+            <div class="field-group"><label>Stat 1 Label</label><input type="text" data-path="hero.stat1Label" oninput="handleLiveInput(this)"/></div>
+          </div>
+          <div class="field-row">
+            <div class="field-group"><label>Stat 2 Number</label><input type="text" data-path="hero.stat2Num" oninput="handleLiveInput(this)"/></div>
+            <div class="field-group"><label>Stat 2 Label</label><input type="text" data-path="hero.stat2Label" oninput="handleLiveInput(this)"/></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion 3: Medical Subjects Header -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-book-medical"></i> Subjects Section Title</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body">
+          <div class="field-group">
+            <label>Section Badge</label>
+            <input type="text" data-path="subjectsSection.badge" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Section Title</label>
+            <input type="text" data-path="subjectsSection.title" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Section Subtitle</label>
+            <textarea data-path="subjectsSection.subtitle" rows="2" oninput="handleLiveInput(this)"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion 4: Featured Presentations Header -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-fire"></i> Featured Section Title</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body">
+          <div class="field-group">
+            <label>Section Badge</label>
+            <input type="text" data-path="featuredSection.badge" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Section Title</label>
+            <input type="text" data-path="featuredSection.title" oninput="handleLiveInput(this)"/>
+          </div>
+          <div class="field-group">
+            <label>Section Subtitle</label>
+            <textarea data-path="featuredSection.subtitle" rows="2" oninput="handleLiveInput(this)"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Accordion 5: How It Works -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-list-check"></i> How It Works Steps</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body" id="accHowItWorks"></div>
+      </div>
+
+      <!-- Accordion 6: FAQ Accordion Editor -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-circle-question"></i> FAQ Questions & Answers</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body">
+          <div id="faqListEditor"></div>
+          <button class="btn btn-outline btn-full" style="margin-top:.75rem;" onclick="addNewFaqItem()"><i class="fa-solid fa-plus"></i> Add New FAQ Question</button>
+        </div>
+      </div>
+
+      <!-- Accordion 7: Contact Section -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-envelope"></i> Contact Section</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body">
+          <div class="field-group"><label>Section Title</label><input type="text" data-path="contactSection.title" oninput="handleLiveInput(this)"/></div>
+          <div class="field-group"><label>Support Email</label><input type="email" data-path="contactSection.email" oninput="handleLiveInput(this)"/></div>
+          <div class="field-group"><label>Support Phone</label><input type="text" data-path="contactSection.phone" oninput="handleLiveInput(this)"/></div>
+          <div class="field-group"><label>Working Hours</label><input type="text" data-path="contactSection.hours" oninput="handleLiveInput(this)"/></div>
+        </div>
+      </div>
+
+      <!-- Accordion 8: Footer -->
+      <div class="editor-acc-item">
+        <button class="acc-title" onclick="toggleAcc(this)">
+          <span><i class="fa-solid fa-shoe-prints"></i> Footer & Copyright</span>
+          <i class="fa-solid fa-chevron-down acc-arrow"></i>
+        </button>
+        <div class="acc-body">
+          <div class="field-group"><label>Footer Description</label><textarea data-path="footer.desc" rows="3" oninput="handleLiveInput(this)"></textarea></div>
+          <div class="field-group"><label>Copyright Text</label><input type="text" data-path="footer.copyright" oninput="handleLiveInput(this)"/></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- MODE: PPT PRESENTATIONS EDITOR -->
+    <div class="editor-mode-panel" id="panel-pptEditor">
+      <div class="panel-header">
+        <h3><i class="fa-solid fa-file-powerpoint" style="color:#f59e0b;"></i> PPT Presentations Editor</h3>
+        <p>Create new PPTs, design slide decks, and set pricing</p>
+      </div>
+
+      <div class="field-group" style="margin-bottom:1rem;">
+        <label>Select Medical Subject</label>
+        <select id="pptEditorSubjectFilter" onchange="renderPptEditorList()"></select>
+      </div>
+
+      <!-- Prominent Upload from Phone/Laptop Media Card with Plus Icon -->
+      <div class="ppt-media-upload-card" onclick="triggerPptUploadFromMedia()" ondragover="handleDragOverPpt(event)" ondragleave="handleDragLeavePpt(event)" ondrop="handleDropPpt(event)">
+        <div class="plus-icon-badge">
+          <i class="fa-solid fa-plus"></i>
+        </div>
+        <div class="upload-card-content">
+          <span class="upload-card-title">Add PPT from Media</span>
+          <span class="upload-card-desc">Pick from Phone/Laptop (.pptx, .ppt, .pdf)</span>
+        </div>
+        <span class="upload-card-pill"><i class="fa-solid fa-file-arrow-up"></i> Upload</span>
+      </div>
+      <input type="file" id="pptDeviceMediaInput" accept=".ppt,.pptx,.pdf,.ppsx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/pdf" style="display:none;" onchange="handlePptDeviceFileSelected(this.files)"/>
+
+      <button class="btn btn-save btn-full" onclick="openCreateNewPptModal()" style="margin-bottom:1.25rem;">
+        <i class="fa-solid fa-plus"></i> Create Blank PPT Presentation
+      </button>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+        <span style="font-size:.8rem;font-weight:700;color:white;" id="pptCountLabel">Presentations</span>
+      </div>
+
+      <div class="subj-manager-list" id="pptPresentationList"></div>
+    </div>
+
+    <!-- MODE 2: SUBJECTS MANAGER -->
+    <div class="editor-mode-panel" id="panel-subjects">
+      <div class="panel-header">
+        <h3><i class="fa-solid fa-book-medical"></i> Manage Subjects</h3>
+        <p>Add, edit, change colors or delete medical subjects</p>
+      </div>
+
+      <button class="btn btn-save btn-full" onclick="openSuiteAddSubjectModal()" style="margin-bottom:1rem;"><i class="fa-solid fa-plus"></i> Add New Subject</button>
+      <div class="subj-manager-list" id="suiteSubjectsList"></div>
+    </div>
+
+    <!-- MODE 3: ADD NEW CUSTOM SECTION -->
+    <div class="editor-mode-panel" id="panel-customSection">
+      <div class="panel-header">
+        <h3><i class="fa-solid fa-square-plus"></i> Add Custom Section</h3>
+        <p>Build custom section components directly onto the page</p>
+      </div>
+
+      <div class="field-group">
+        <label>Section Preset Layout</label>
+        <select id="customSecLayout">
+          <option value="hero">Hero Callout Box</option>
+          <option value="cards">3-Column Card Grid</option>
+          <option value="banner">Full-Width Announcement Banner</option>
+          <option value="features">Feature Checklist Grid</option>
+        </select>
+      </div>
+
+      <div class="field-group">
+        <label>Section Title</label>
+        <input type="text" id="customSecTitle" placeholder="e.g. Student Testimonials"/>
+      </div>
+
+      <div class="field-group">
+        <label>Section Subtitle / Content</label>
+        <textarea id="customSecSubtitle" rows="3" placeholder="Enter description or content text..."></textarea>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label>Background Color</label>
+          <input type="color" id="customSecBg" value="#f8fafc"/>
+        </div>
+        <div class="field-group">
+          <label>Icon Class</label>
+          <input type="text" id="customSecIcon" value="fa-solid fa-star"/>
+        </div>
+      </div>
+
+      <button class="btn btn-save btn-full" onclick="addCustomSection()"><i class="fa-solid fa-plus"></i> Add Section to Page</button>
+      <div id="customSectionsList" style="margin-top:1.5rem;"></div>
+    </div>
+
+    <!-- MODE 4: ADMIN USERS MANAGER -->
+    <div class="editor-mode-panel" id="panel-users">
+      <div class="panel-header">
+        <h3><i class="fa-solid fa-users-gear"></i> Manage Administrators</h3>
+        <p>Create new admin logins or change existing passwords</p>
+      </div>
+
+      <div class="field-group"><label>New Admin Full Name</label><input type="text" id="newAdminName"/></div>
+      <div class="field-group"><label>New Admin Email</label><input type="email" id="newAdminEmail"/></div>
+      <div class="field-group"><label>Password</label><input type="password" id="newAdminPass"/></div>
+      <button class="btn btn-save btn-full" onclick="createNewAdminInSuite()"><i class="fa-solid fa-user-plus"></i> Create Admin Account</button>
+
+      <h4 style="margin:1.5rem 0 .75rem;font-size:.9rem;color:white;">Current Administrators</h4>
+      <div id="suiteAdminUsersList"></div>
+    </div>
+
+    <!-- MODE 5: SETTINGS & PAYMENT GATEWAYS -->
+    <div class="editor-mode-panel" id="panel-settings">
+      <div class="panel-header">
+        <h3><i class="fa-solid fa-credit-card"></i> Payment Methods Gateway</h3>
+        <p>Configure local & international payment options for customers</p>
+      </div>
+
+      <div class="field-group">
+        <label><i class="fa-solid fa-wallet" style="color:#10b981;"></i> EasyPaisa Account Number</label>
+        <input type="text" id="suiteEpNumber" placeholder="03017654321" oninput="saveSuitePaymentConfig()"/>
+      </div>
+      <div class="field-group">
+        <label><i class="fa-solid fa-money-bill-wave" style="color:#ef4444;"></i> JazzCash Account Number</label>
+        <input type="text" id="suiteJcNumber" placeholder="03009876543" oninput="saveSuitePaymentConfig()"/>
+      </div>
+      <div class="field-group">
+        <label><i class="fa-brands fa-paypal" style="color:#0079c1;"></i> PayPal Business Email</label>
+        <input type="email" id="suitePaypalEmail" placeholder="payments@albatross.com" oninput="saveSuitePaymentConfig()"/>
+      </div>
+      <div class="field-group">
+        <label><i class="fa-solid fa-building-columns" style="color:#8b5cf6;"></i> Bank Name</label>
+        <input type="text" id="suiteBankName" placeholder="Meezan Bank Ltd." oninput="saveSuitePaymentConfig()"/>
+      </div>
+      <div class="field-group">
+        <label>Account Title</label>
+        <input type="text" id="suiteBankTitle" placeholder="MLThub by Albatross" oninput="saveSuitePaymentConfig()"/>
+      </div>
+      <div class="field-group">
+        <label>IBAN Number</label>
+        <input type="text" id="suiteBankIban" placeholder="PK64MEZN0001234567890101" oninput="saveSuitePaymentConfig()"/>
+      </div>
+      <div class="field-group">
+        <label>Raast ID</label>
+        <input type="text" id="suiteBankRaast" placeholder="03001234567" oninput="saveSuitePaymentConfig()"/>
+      </div>
+
+      <button class="btn btn-save btn-full" onclick="saveSuitePaymentConfig()" style="margin-top:1rem;margin-bottom:1.5rem;">
+        <i class="fa-solid fa-floppy-disk"></i> Save Payment Gateways
+      </button>
+
+      <div style="border-top:1px solid rgba(255,255,255,.1);padding-top:1.25rem;">
+        <h4 style="font-size:.85rem;color:white;margin-bottom:.5rem;">Danger Zone</h4>
+        <button class="btn btn-discard btn-full" onclick="resetSuiteToDefaults()"><i class="fa-solid fa-rotate-left"></i> Reset All Content to Defaults</button>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- RIGHT LIVE INTERACTIVE PREVIEW CANVAS -->
+  <main class="preview-canvas-wrap">
+    <div class="device-frame" id="deviceFrame">
+      <div class="frame-bar">
+        <div class="frame-dots"><span></span><span></span><span></span></div>
+        <div class="frame-url"><i class="fa-solid fa-lock"></i> https://mlthub.com/live-preview</div>
+        <button class="frame-refresh" onclick="reloadPreviewIframe()"><i class="fa-solid fa-rotate"></i></button>
+      </div>
+      <!-- Live Preview pointing to the actual website index.html -->
+      <iframe src="../index.html" id="previewIframe" class="preview-iframe"></iframe>
+    </div>
+  </main>
+
+</div>
+
+<!-- ====== SLIDE-BY-SLIDE PPT BUILDER MODAL ====== -->
+<div class="studio-modal-overlay" id="pptSlideModal" style="display:none;" onclick="if(event.target===this)closePptModalEditor()">
+  <div class="studio-modal-box">
+    <div class="studio-modal-header">
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#ef4444,#f59e0b);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:white;">
+          <i class="fa-solid fa-file-powerpoint"></i>
+        </div>
+        <div>
+          <h3 id="pptModalTitle" style="font-size:1.1rem;font-weight:700;color:white;">Edit PPT Presentation & Slides</h3>
+          <p style="font-size:.75rem;color:var(--muted);">Customize presentation title, pricing, and each slide content</p>
+        </div>
+      </div>
+      <button class="icon-btn" onclick="closePptModalEditor()" style="width:34px;height:34px;"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="studio-modal-body">
+      <!-- General Presentation Settings -->
+      <div class="field-row" style="margin-bottom:1rem;">
+        <div class="field-group">
+          <label>Subject</label>
+          <select id="modalPptSubjectSelect" onchange="handleModalSubjectChange()"></select>
+        </div>
+        <div class="field-group">
+          <label>Presentation Title</label>
+          <input type="text" id="modalPptTitle" placeholder="e.g. Upper Limb Anatomy" required/>
+        </div>
+      </div>
+
+      <div class="field-row" style="margin-bottom:1.25rem;">
+        <div class="field-group">
+          <label>Price</label>
+          <input type="text" id="modalPptPrice" value="$1.00"/>
+        </div>
+        <div class="field-group">
+          <label>Original Price</label>
+          <input type="text" id="modalPptOldPrice" value="$9.99"/>
+        </div>
+        <div class="field-group">
+          <label>Rating</label>
+          <input type="text" id="modalPptRating" value="4.9"/>
+        </div>
+      <!-- Media File Attachment from Phone/Laptop -->
+      <div class="modal-attachment-section">
+        <label style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.4rem;">
+          <span style="font-weight:700;color:#cbd5e1;font-size:.8rem;"><i class="fa-solid fa-paperclip" style="color:#60a5fa;"></i> Attached Presentation File (Phone / Laptop Media)</span>
+          <span style="font-size:.7rem;color:var(--muted);">Format: .pptx, .ppt, .pdf</span>
+        </label>
+        <div class="attachment-box" id="modalAttachmentBox">
+          <div class="attachment-empty" id="attachmentEmptyView">
+            <button type="button" class="btn btn-attach" onclick="triggerModalMediaUpload()">
+              <i class="fa-solid fa-plus"></i> Attach PPT / PPTX from Device Media
+            </button>
+            <span class="attachment-note">Upload your original slide deck for student downloads</span>
+          </div>
+          <div class="attachment-filled" id="attachmentFilledView" style="display:none;">
+            <div class="file-badge-icon"><i class="fa-solid fa-file-powerpoint"></i></div>
+            <div class="file-badge-info">
+              <div class="file-badge-name" id="modalAttachedFileName">Presentation.pptx</div>
+              <div class="file-badge-meta" id="modalAttachedFileMeta">12.4 MB · Ready for student downloads</div>
+            </div>
+            <div class="file-badge-actions">
+              <button type="button" class="btn btn-sm btn-outline" onclick="testDownloadModalFile()" title="Test Download"><i class="fa-solid fa-download"></i></button>
+              <button type="button" class="btn btn-sm btn-danger" onclick="removeModalAttachedFile()" title="Remove File"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+        <input type="file" id="modalMediaFileInput" accept=".ppt,.pptx,.pdf,.ppsx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/pdf" style="display:none;" onchange="handleModalMediaFileSelected(this.files)"/>
+      </div>
+
+      <div class="slide-editor-layout">
+        <!-- Slide Selector Column -->
+        <div class="slide-nav-col">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">
+            <span style="font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;">Slides</span>
+            <button class="btn btn-save btn-sm" onclick="addNewSlideToCurrentPpt()" style="padding:.25rem .6rem;font-size:.7rem;"><i class="fa-solid fa-plus"></i> Slide</button>
+          </div>
+          <div class="slide-nav-tabs" id="modalSlideTabs"></div>
+        </div>
+
+        <!-- Slide Content Edit Column -->
+        <div class="slide-edit-col">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+            <h4 id="activeSlideLabel" style="font-size:.9rem;color:white;font-weight:700;">Slide 1 of 10</h4>
+            <button class="icon-btn icon-btn-danger" id="deleteSlideBtn" onclick="deleteCurrentSlide()" title="Delete Slide"><i class="fa-solid fa-trash"></i></button>
+          </div>
+
+          <div class="field-row" style="margin-bottom:.75rem;">
+            <div class="field-group" style="flex:2;">
+              <label>Slide Title</label>
+              <input type="text" id="activeSlideTitle" oninput="updateActiveSlideContent()"/>
+            </div>
+            <div class="field-group" style="flex:1;">
+              <label>Icon / Emoji</label>
+              <input type="text" id="activeSlideIcon" value="🦴" oninput="updateActiveSlideContent()"/>
+            </div>
+          </div>
+
+          <div class="field-group" style="margin-bottom:1rem;">
+            <label>Slide Body Content (Use bullet points • for key points)</label>
+            <textarea id="activeSlideBody" rows="6" oninput="updateActiveSlideContent()" placeholder="• Key diagnostic criteria&#10;• First line investigations&#10;• Clinical management"></textarea>
+          </div>
+
+          <!-- Live Card Preview of the Slide -->
+          <div class="slide-preview-box">
+            <div style="font-size:.65rem;font-weight:800;color:#64748b;letter-spacing:.08em;margin-bottom:.3rem;" id="prevCardNum">SLIDE 1 OF 10</div>
+            <div style="font-size:2rem;margin-bottom:.4rem;" id="prevCardIcon">🦴</div>
+            <div style="font-size:1.1rem;font-weight:800;color:#e2e8f0;margin-bottom:.5rem;" id="prevCardTitle">Introduction to Anatomy</div>
+            <div style="font-size:.8rem;color:#94a3b8;line-height:1.6;" id="prevCardBody">Bullet points...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="studio-modal-footer">
+      <button class="btn btn-discard" onclick="closePptModalEditor()">Cancel</button>
+      <button class="btn btn-save" onclick="saveCurrentPptModal()"><i class="fa-solid fa-floppy-disk"></i> Save PPT Presentation</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="studio-toast" id="suiteToast"></div>
+
+<script src="file-storage.js"></script>
+<script src="editor.js"></script>
+</body>
+</html>

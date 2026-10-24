@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>First Admin Account Setup – MLThub by Albatross</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      color: #f8fafc;
+    }
+    .setup-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem;
+      max-width: 480px;
+      width: 100%;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+    .setup-logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: white;
+      margin: 0 auto 1.25rem;
+      box-shadow: 0 8px 24px rgba(37,99,235,0.4);
+    }
+    .setup-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 0.35rem;
+    }
+    .setup-sub {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.875rem;
+      margin-bottom: 1.75rem;
+    }
+    .form-group-custom {
+      margin-bottom: 1.15rem;
+    }
+    .form-group-custom label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 0.4rem;
+    }
+    .input-wrapper {
+      position: relative;
+    }
+    .input-wrapper i {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+    .input-wrapper input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.6rem;
+      border-radius: var(--radius);
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      background: rgba(15, 23, 42, 0.6);
+      color: white;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+    .input-wrapper input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+    }
+    .btn-setup {
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      margin-top: 0.75rem;
+      transition: var(--transition);
+    }
+    .btn-setup:hover {
+      opacity: 0.92;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(37,99,235,0.4);
+    }
+    .locked-box {
+      text-align: center;
+      padding: 1.5rem 0;
+    }
+    .locked-icon {
+      font-size: 3.5rem;
+      color: #ef4444;
+      margin-bottom: 1rem;
+    }
+    .alert-msg {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .success-msg {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #6ee7b7;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="setup-card">
+  <div class="setup-logo"><i class="fa-solid fa-user-shield"></i></div>
+
+  <div id="unlockedState">
+    <h1 class="setup-title">Initial Admin Setup</h1>
+    <p class="setup-sub">Create the first Master Administrator account for MLThub by Albatross</p>
+
+    <div class="alert-msg" id="alertMsg"></div>
+    <div class="success-msg" id="successMsg"></div>
+
+    <form id="setupForm" onsubmit="handleInitialSetup(event)">
+      <div class="form-group-custom">
+        <label>Administrator Full Name</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-user"></i>
+          <input type="text" id="adminName" placeholder="e.g. Master Admin" required/>
+        </div>
+      </div>
+
+      <div class="form-group-custom">
+        <label>Administrator Email Address</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-envelope"></i>
+          <input type="email" id="adminEmail" placeholder="admin@mlthub.com" required/>
+        </div>
+      </div>
+
+      <div class="form-group-custom">
+        <label>Master Password (min 6 characters)</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="adminPass" placeholder="Enter secure password" required minlength="6"/>
+        </div>
+      </div>
+
+      <div class="form-group-custom">
+        <label>Confirm Master Password</label>
+        <div class="input-wrapper">
+          <i class="fa-solid fa-lock"></i>
+          <input type="password" id="adminPassConfirm" placeholder="Confirm secure password" required/>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-setup" id="submitBtn">
+        <i class="fa-solid fa-shield-check"></i> Create Admin Account
+      </button>
+    </form>
+  </div>
+
+  <div id="lockedState" style="display:none;" class="locked-box">
+    <div class="locked-icon"><i class="fa-solid fa-lock"></i></div>
+    <h2 class="setup-title" style="font-size:1.4rem;">Initial Setup Locked</h2>
+    <p class="setup-sub" style="margin-bottom:1.5rem;">An Administrator account already exists in the system. Further initial admin creation is locked for security reasons.</p>
+    <a href="admin-login.html" class="btn-setup" style="display:block;text-align:center;text-decoration:none;">
+      <i class="fa-solid fa-right-to-bracket"></i> Proceed to Admin Login
+    </a>
+  </div>
+</div>
+
+<script src="admin-db.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.MLTDB.hasAdminAccounts()) {
+      document.getElementById('unlockedState').style.display = 'none';
+      document.getElementById('lockedState').style.display = 'block';
+    }
+  });
+
+  async function handleInitialSetup(e) {
+    e.preventDefault();
+    const alertBox = document.getElementById('alertMsg');
+    const successBox = document.getElementById('successMsg');
+    const submitBtn = document.getElementById('submitBtn');
+
+    alertBox.style.display = 'none';
+    successBox.style.display = 'none';
+
+    const name = document.getElementById('adminName').value;
+    const email = document.getElementById('adminEmail').value;
+    const pass = document.getElementById('adminPass').value;
+    const passConfirm = document.getElementById('adminPassConfirm').value;
+
+    if (pass !== passConfirm) {
+      alertBox.textContent = 'Passwords do not match. Please re-enter.';
+      alertBox.style.display = 'block';
+      return;
+    }
+
+    try {
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Creating Account…';
+
+      await window.MLTDB.createAdminAccount({
+        name: name,
+        email: email,
+        password: pass,
+        role: 'SuperAdmin'
+      });
+
+      // Authenticate and auto log in
+      await window.MLTDB.authenticateAdmin(email, pass);
+
+      successBox.textContent = '✓ Master Admin Account created successfully! Redirecting to Admin Panel…';
+      successBox.style.display = 'block';
+
+      setTimeout(() => {
+        window.location.href = 'admin.html';
+      }, 1200);
+
+    } catch (err) {
+      alertBox.textContent = err.message || 'An error occurred during setup.';
+      alertBox.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<i class="fa-solid fa-shield-check"></i> Create Admin Account';
+    }
+  }
+</script>
+</body>
+</html>
